@@ -1,0 +1,58 @@
+[
+  {
+    "id": "1",
+    "question": "What is your refund policy?",
+    "answer": "We offer refunds within 30 days for unused subscriptions. Contact support@example.com to initiate a refund.",
+    "tags": ["refund", "billing", "cancellation"],
+    "last_updated": "2026-01-15"
+  },
+  {
+    "id": "2",
+    "question": "How do I reset my password?",
+    "answer": "Go to Settings > Security > Reset Password. You'll receive a verification email to complete the process.",
+    "tags": ["password", "account", "security"],
+    "last_updated": "2026-02-10"
+  },
+  {
+    "id": "3",
+    "question": "What payment methods do you accept?",
+    "answer": "We accept Visa, Mastercard, American Express, PayPal, and bank transfers (ACH). For enterprise plans we also support Net-30 invoicing.",
+    "tags": ["payment", "billing"],
+    "last_updated": "2026-03-01"
+  },
+  {
+    "id": "4",
+    "question": "Can I upgrade or downgrade my plan?",
+    "answer": "Yes, you can change your plan at any time from Settings > Billing > Plan. Changes take effect on the next billing cycle.",
+    "tags": ["plan", "billing", "upgrade", "downgrade"],
+    "last_updated": "2026-01-20"
+  },
+  {
+    "id": "5",
+    "question": "Do you have a mobile app?",
+    "answer": "Yes, our mobile app is available on iOS (App Store) and Android (Google Play). Download it for on-the-go access.",
+    "tags": ["mobile", "app", "ios", "android"],
+    "last_updated": "2026-02-28"
+  },
+  {
+    "id": "6",
+    "question": "How do I invite team members?",
+    "answer": "Go to Settings > Team > Invite Members. Enter their email addresses and assign a role (Admin, Editor, Viewer).",
+    "tags": ["team", "invite", "members"],
+    "last_updated": "2026-03-05"
+  },
+  {
+    "id": "7",
+    "question": "Is my data secure?",
+    "answer": "Yes, we use AES-256 encryption at rest and TLS 1.3 in transit. We are SOC 2 Type II certified and GDPR compliant.",
+    "tags": ["security", "encryption", "compliance", "gdpr"],
+    "last_updated": "2026-02-01"
+  },
+  {
+    "id": "8",
+    "question": "What is your uptime SLA?",
+    "answer": "We guarantee 99.9% uptime for all paid plans. Enterprise plans include 99.99% SLA with dedicated support.",
+    "tags": ["uptime", "sla", "reliability"],
+    "last_updated": "2026-01-10"
+  }
+]
