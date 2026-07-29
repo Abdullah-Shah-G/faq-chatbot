@@ -26,11 +26,12 @@ export async function POST(request: Request) {
     };
 
     return NextResponse.json(response);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Chat API error:", error);
+    const isQuota = error?.status === 429 || error?.code === "insufficient_quota";
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: isQuota ? "API quota exceeded. Check your OpenAI billing." : "Internal server error" },
+      { status: isQuota ? 503 : 500 }
     );
   }
 }
