@@ -27,7 +27,7 @@ export async function generateReply(
       : `User: ${userMessage}`;
 
   const model = getClient().getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash",
     systemInstruction: SYSTEM_PROMPT,
     generationConfig: { maxOutputTokens: 250, temperature: 0.2 },
   });

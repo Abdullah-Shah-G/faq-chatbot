@@ -28,9 +28,10 @@ export async function POST(request: Request) {
     return NextResponse.json(response);
   } catch (error: any) {
     console.error("Chat API error:", error);
-    const isQuota = error?.status === 429 || error?.code === "insufficient_quota";
+    const msg = error?.message || error?.toString() || "";
+    const isQuota = error?.status === 429 || error?.code === "insufficient_quota" || msg.includes("quota") || msg.includes("429");
     return NextResponse.json(
-      { error: isQuota ? "API quota exceeded. Check your OpenAI billing." : "Internal server error" },
+      { error: isQuota ? "API quota exceeded. Check your Gemini billing at https://aistudio.google.com." : "Internal server error" },
       { status: isQuota ? 503 : 500 }
     );
   }
