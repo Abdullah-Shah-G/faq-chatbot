@@ -1,16 +1,10 @@
 import os
 from dotenv import load_dotenv
 from rapidfuzz import fuzz
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 load_dotenv()
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-3.1-flash-lite",
-    api_key=os.getenv("GEMINI_API_KEY"),
-    max_output_tokens=250,
-    temperature=0.2,
-)
+llm = None
 
 SYSTEM_PROMPT = """You are SupportBot, a concise and accurate FAQ assistant. Always try to answer from the provided FAQ knowledge base. If the user's question matches an FAQ entry, respond with the FAQ answer and show a one-line citation like "(source: FAQ)". If the user asks something not in the FAQ, ask one clarifying question or reply: "I don't have that information — would you like me to escalate or search for more details?" Keep answers short (max 120 words). Avoid hallucinations. If the user asks for links or actions, provide them only if present in the FAQ."""
 
@@ -30,6 +24,15 @@ def find_matches(query: str, faqs: list[dict]) -> list[dict]:
 
 
 async def generate_reply(user_message: str, candidate_faqs: list[dict]) -> tuple[str, str | None]:
+    global llm
+    if llm is None:
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-3.1-flash-lite",
+            api_key=os.getenv("GEMINI_API_KEY"),
+            max_output_tokens=250,
+            temperature=0.2,
+        )
     if candidate_faqs:
         context_lines = []
         for i, c in enumerate(candidate_faqs, 1):
@@ -50,7 +53,9 @@ async def generate_reply(user_message: str, candidate_faqs: list[dict]) -> tuple
     reply = content.strip() or "I'm sorry, I couldn't process that request."
 
     matched_id = None
-    if "(source: FAQ)" in reply and candidate_faqs:
-        matched_id = candidate_faqs[0]["faq"]["id"]
+    for candidate in candidate_faqs:
+        if reply.removesuffix("(source: FAQ)").strip() == candidate["faq"]["answer"].strip():
+            matched_id = candidate["faq"]["id"]
+            break
 
     return reply, matched_id
