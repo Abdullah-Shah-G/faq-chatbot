@@ -36,7 +36,7 @@
       <button onclick="resetAll()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Reset to Defaults</button>
     </div>
 
-    <p class="text-xs text-gray-400 mt-4">FAQ data is stored server-side in data/faqs.json. Restart the server after editing to refresh seed data.</p>
+    <p class="text-xs text-gray-400 mt-4">FAQ data is stored server-side in data/faqs.json. Saved changes apply immediately. Sign in using any username and your configured admin password.</p>
   </div>
 
   <script>
@@ -53,64 +53,68 @@
 
     let faqs = {{ faqs }};
 
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+    }
+
     function render() {
       const tbody = document.getElementById("faq-body");
-      tbody.innerHTML = faqs.map(f => \`
-        <tr class="border-b hover:bg-gray-50" data-id="\${f.id}">
-          <td class="px-4 py-2 text-gray-500">\${f.id}</td>
+      tbody.innerHTML = faqs.map(f => `
+        <tr class="border-b hover:bg-gray-50" data-id="${f.id}">
+          <td class="px-4 py-2 text-gray-500">${f.id}</td>
           <td class="px-4 py-2">
-            <div class="text-display">\${f.question}</div>
+            <div class="text-display">${escapeHtml(f.question)}</div>
             <div class="text-edit hidden">
-              <input value="\${f.question.replace(/"/g, '&quot;')}" class="w-full border rounded px-2 py-1 text-sm question-input" />
+              <input value="${escapeHtml(f.question)}" class="w-full border rounded px-2 py-1 text-sm question-input" />
             </div>
           </td>
           <td class="px-4 py-2">
-            <div class="text-display">\${f.answer}</div>
+            <div class="text-display">${escapeHtml(f.answer)}</div>
             <div class="text-edit hidden">
-              <textarea class="w-full border rounded px-2 py-1 text-sm answer-input" rows="2">\${f.answer}</textarea>
+              <textarea class="w-full border rounded px-2 py-1 text-sm answer-input" rows="2">${escapeHtml(f.answer)}</textarea>
             </div>
           </td>
           <td class="px-4 py-2">
-            <div class="text-display">\${f.tags.join(", ")}</div>
+            <div class="text-display">${escapeHtml(f.tags.join(", "))}</div>
             <div class="text-edit hidden">
-              <input value="\${f.tags.join(", ")}" class="w-full border rounded px-2 py-1 text-sm tags-input" placeholder="comma separated" />
+              <input value="${escapeHtml(f.tags.join(", "))}" class="w-full border rounded px-2 py-1 text-sm tags-input" placeholder="comma separated" />
             </div>
           </td>
           <td class="px-4 py-2">
             <div class="text-display flex gap-1">
-              <button onclick="startEdit('\${f.id}')" class="text-blue-600 hover:underline text-xs">Edit</button>
-              <button onclick="deleteEntry('\${f.id}')" class="text-red-600 hover:underline text-xs">Delete</button>
+              <button onclick="startEdit('${f.id}')" class="text-blue-600 hover:underline text-xs">Edit</button>
+              <button onclick="deleteEntry('${f.id}')" class="text-red-600 hover:underline text-xs">Delete</button>
             </div>
             <div class="text-edit hidden flex gap-1">
-              <button onclick="confirmEdit('\${f.id}')" class="text-green-600 hover:underline text-xs">Save</button>
-              <button onclick="cancelEdit('\${f.id}')" class="text-gray-600 hover:underline text-xs">Cancel</button>
+              <button onclick="confirmEdit('${f.id}')" class="text-green-600 hover:underline text-xs">Save</button>
+              <button onclick="cancelEdit('${f.id}')" class="text-gray-600 hover:underline text-xs">Cancel</button>
             </div>
           </td>
         </tr>
-      \`).join("");
+      `).join("");
     }
 
     function startEdit(id) {
-      const row = document.querySelector(\`tr[data-id="\${id}"]\`);
+      const row = document.querySelector(`tr[data-id="${id}"]`);
       row.querySelectorAll(".text-display").forEach(el => el.classList.add("hidden"));
       row.querySelectorAll(".text-edit").forEach(el => el.classList.remove("hidden"));
     }
 
     function cancelEdit(id) {
-      const row = document.querySelector(\`tr[data-id="\${id}"]\`);
+      const row = document.querySelector(`tr[data-id="${id}"]`);
       row.querySelectorAll(".text-display").forEach(el => el.classList.remove("hidden"));
       row.querySelectorAll(".text-edit").forEach(el => el.classList.add("hidden"));
     }
 
     function confirmEdit(id) {
-      const row = document.querySelector(\`tr[data-id="\${id}"]\`);
+      const row = document.querySelector(`tr[data-id="${id}"]`);
       const faq = faqs.find(f => f.id === id);
       if (!faq) return;
       faq.question = row.querySelector(".question-input").value;
       faq.answer = row.querySelector(".answer-input").value;
       faq.tags = row.querySelector(".tags-input").value.split(",").map(t => t.trim());
       faq.last_updated = new Date().toISOString().split("T")[0];
-      cancelEdit(id);
+      render();
     }
 
     function deleteEntry(id) {
